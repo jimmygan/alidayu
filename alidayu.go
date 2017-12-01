@@ -79,14 +79,12 @@ func InitAPI(accessKeyId, accessKeySecret string) {
 // @param string|nil smsUpExtendCode [optional] 选填，上行短信扩展码（扩展码字段控制在7位或以下，无特殊需求用户请忽略此字段）
 // @return
 func SendSms(signName, templateCode, phoneNumbers, outId string, templateParam map[string]interface{}, smsUpExtendCode string) (*Result, error) {
-	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 	params := url.Values{}
-	params.Add("Timestamp", timestamp)
 	params.Add("Action", "SendSms")
 	params.Add("SignName", signName)
 	params.Add("TemplateCode", templateCode)
 	params.Add("PhoneNumbers", phoneNumbers)
-	params.Add("Version", "2017-05-25")
+
 
 	if outId != "" {
 		params.Add("OutId", outId)
@@ -128,11 +126,14 @@ func QuerySendDetails(phoneNumber, sendDate, bizId string, pageSize, currentPage
 
 // Sign 签名
 func Sign(method string, params url.Values) url.Values {
+	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+	params.Add("Timestamp", timestamp)
 	params.Add("SignatureMethod", SignatureMethod)
 	params.Add("AccessKeyId", AccessKeyId)
 	params.Add("SignatureVersion", SignatureVersion)
 	params.Add("Format", Format)
 	params.Add("SignatureNonce", RandString(16))
+	params.Add("Version", "2017-05-25")
 
 	// hmac签名
 	data := params.Encode()
